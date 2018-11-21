@@ -13,6 +13,8 @@ import time
 import smtplib
 import pymysql
 import os
+import logging
+import traceback
 
 os.chdir('/home/uuos2/pyeos/build/programs/data-dir')
 def Checkemail(email):
@@ -27,6 +29,11 @@ def Checkemail(email):
         else:
             return True
 
+def SetLog(s):
+    s = s
+    logging.basicConfig(level=logging.DEBUG,filename='emaillog.log',filemode='a',format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+    logger = logging.error(s)
+    return logger
 
 def _format_addr(s):
     name, addr = parseaddr(s)
@@ -152,7 +159,7 @@ if __name__ == "__main__":
     #print(eosapi.get_account('edson'))
     wallet.open('mywallet')
     wallet.unlock('mywallet','PW5K7NsAw2vatUubc4A2789fRZw8CpF65zdomnatpsJFvRYpAutdp')
-    $wallet.import_key('mywallet','5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
+    #wallet.import_key('mywallet','5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3')
     if checkemail:
         try:
             create = eosapi.create_account('eosio', getinfo[2], getinfo[0], getinfo[1])
@@ -162,6 +169,7 @@ if __name__ == "__main__":
                 CreateSuccess()
         except Exception:
             CreateFail(emailID,0)
+            SetLog(traceback.format_exc())
         finally:
             CleanSql(emailID)
 
